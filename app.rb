@@ -33,7 +33,8 @@ class Parser
       name: body.css('.site__title_white').first.children.first.text,
       additiona_info: body.css('.speaker-info__text').first.children.first.text.strip,
       twitter: social.select { |l| l[/twitter/] }.first,
-      linkedin: social.select { |l| l[/linkedin/] }.first
+      linkedin: social.select { |l| l[/linkedin/] }.first,
+      description: body.css('.description').first.children.select { |c| c.name = 'p' }.map(&:content).join(' ').strip
     )
   end
 end
@@ -69,9 +70,9 @@ end
 class CSVExporter
   def call(speakers)
     CSV.open("speakers.csv", "wb") do |csv|
-      csv << ["Name", "Role", "Twitter", "Linkedin"]
+      csv << ["Name", "Role", "Twitter", "Linkedin", "Description"]
       speakers.each do |speaker|
-        csv << [speaker.name, speaker.additiona_info, speaker.twitter, speaker.linkedin]
+        csv << [speaker.name, speaker.additiona_info, speaker.twitter, speaker.linkedin, speaker.description]
       end
     end
   end
